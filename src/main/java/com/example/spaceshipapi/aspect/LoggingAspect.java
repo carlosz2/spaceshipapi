@@ -13,9 +13,17 @@ public class LoggingAspect {
 
     private static final Logger logger = LoggerFactory.getLogger(LoggingAspect.class);
 
+    
+    /** 
+     * @param id
+     */
     @Pointcut("execution(* com.example.spaceshipapi.service.SpaceshipService.getSpaceshipById(..)) && args(id)")
     public void getSpaceshipById(Long id) {}
 
+    
+    /** 
+     * @param id
+     */
     @Before("getSpaceshipById(id)")
     public void logIfNegativeId(Long id) {
         if (id < 0) {

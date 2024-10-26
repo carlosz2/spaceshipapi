@@ -10,12 +10,23 @@ import org.springframework.web.context.request.WebRequest;
 public class GlobalExceptionHandler {
 
 
+        
+        /** 
+         * @param ex
+         * @param request
+         * @return ResponseEntity<String>
+         */
         @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<String> handleResourceNotFoundException(ResourceNotFoundException ex, WebRequest request) {
         String message = "Spaceship not found with id: " + ex.getResourceId();
         return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
     }
 
+    
+    /** 
+     * @param ex
+     * @return ResponseEntity<String>
+     */
     @ExceptionHandler(RuntimeException.class)
     
     public ResponseEntity<String> handleRuntimeException(RuntimeException ex) {

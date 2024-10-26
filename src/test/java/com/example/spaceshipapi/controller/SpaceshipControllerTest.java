@@ -36,6 +36,10 @@ public class SpaceshipControllerTest {
     @MockBean
     private SpaceshipService service;
 
+    
+    /** 
+     * @throws Exception
+     */
     @Test
     public void testGetAllSpaceships() throws Exception {
         Spaceship spaceship1 = new Spaceship();
@@ -60,6 +64,10 @@ public class SpaceshipControllerTest {
                 .andExpect(jsonPath("$.content[1].name").value("Enterprise"));
     }
 
+    
+    /** 
+     * @throws Exception
+     */
     @Test
     public void testGetSpaceshipById() throws Exception {
         Spaceship spaceship = new Spaceship();
@@ -76,6 +84,10 @@ public class SpaceshipControllerTest {
                 .andExpect(jsonPath("$.media").value("Star Wars"));
     }
 
+    
+    /** 
+     * @throws Exception
+     */
     @Test
     public void testGetSpaceshipsByName() throws Exception {
         Spaceship spaceship1 = new Spaceship();
