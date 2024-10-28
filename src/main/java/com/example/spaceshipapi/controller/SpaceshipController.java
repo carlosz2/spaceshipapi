@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.spaceshipapi.entity.Spaceship;
+import com.example.spaceshipapi.rabbitmq.RabbitMQProducer;
 import com.example.spaceshipapi.service.SpaceshipService;
 
 @RestController
@@ -26,7 +27,10 @@ public class SpaceshipController {
     @Autowired
     private SpaceshipService service;
 
-    
+
+    @Autowired
+    private RabbitMQProducer rabbitMQProducer;
+
     /** 
      * @param page
      * @return Page<Spaceship>
@@ -44,7 +48,9 @@ public class SpaceshipController {
      */
     @GetMapping("/{id}")
     public ResponseEntity<Spaceship> getSpaceshipById(@PathVariable Long id) {
-        return ResponseEntity.ok(service.getSpaceshipById(id));
+        Spaceship spaceship = service.getSpaceshipById(id);
+        rabbitMQProducer.sendMessage("Spaceship with ID " + id + " was retrieved.");
+        return ResponseEntity.ok(spaceship);
     }
 
     
