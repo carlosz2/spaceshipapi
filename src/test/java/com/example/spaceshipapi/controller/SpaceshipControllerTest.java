@@ -15,6 +15,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -36,10 +37,9 @@ public class SpaceshipControllerTest {
     @MockBean
     private SpaceshipService service;
 
-    
-    /** 
-     * @throws Exception
-     */
+    private static final String USERNAME = "admin";
+    private static final String PASSWORD = "adminpassword";
+
     @Test
     public void testGetAllSpaceships() throws Exception {
         Spaceship spaceship1 = new Spaceship();
@@ -58,16 +58,13 @@ public class SpaceshipControllerTest {
         when(service.getAllSpaceships(pageable)).thenReturn(spaceshipPage);
 
         mockMvc.perform(get("/api/spaceships?page=0")
-                .contentType(MediaType.APPLICATION_JSON))
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(httpBasic(USERNAME, PASSWORD)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content[0].name").value("X-Wing"))
                 .andExpect(jsonPath("$.content[1].name").value("Enterprise"));
     }
 
-    
-    /** 
-     * @throws Exception
-     */
     @Test
     public void testGetSpaceshipById() throws Exception {
         Spaceship spaceship = new Spaceship();
@@ -78,16 +75,13 @@ public class SpaceshipControllerTest {
         when(service.getSpaceshipById(1L)).thenReturn(spaceship);
 
         mockMvc.perform(get("/api/spaceships/1")
-                .contentType(MediaType.APPLICATION_JSON))
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(httpBasic(USERNAME, PASSWORD)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value("X-Wing"))
                 .andExpect(jsonPath("$.media").value("Star Wars"));
     }
 
-    
-    /** 
-     * @throws Exception
-     */
     @Test
     public void testGetSpaceshipsByName() throws Exception {
         Spaceship spaceship1 = new Spaceship();
@@ -103,7 +97,8 @@ public class SpaceshipControllerTest {
         when(service.getSpaceshipsByName("X")).thenReturn(Arrays.asList(spaceship1));
 
         mockMvc.perform(get("/api/spaceships/search?name=X")
-                .contentType(MediaType.APPLICATION_JSON))
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(httpBasic(USERNAME, PASSWORD)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].name").value("X-Wing"));
     }
@@ -119,7 +114,8 @@ public class SpaceshipControllerTest {
 
         mockMvc.perform(post("/api/spaceships")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"name\": \"X-Wing\", \"media\": \"Star Wars\"}"))
+                .content("{\"name\": \"X-Wing\", \"media\": \"Star Wars\"}")
+                .with(httpBasic(USERNAME, PASSWORD)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value("X-Wing"))
                 .andExpect(jsonPath("$.media").value("Star Wars"));
@@ -136,7 +132,8 @@ public class SpaceshipControllerTest {
 
         mockMvc.perform(put("/api/spaceships/1")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"name\": \"X-Wing\", \"media\": \"Star Wars\"}"))
+                .content("{\"name\": \"X-Wing\", \"media\": \"Star Wars\"}")
+                .with(httpBasic(USERNAME, PASSWORD)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value("X-Wing"))
                 .andExpect(jsonPath("$.media").value("Star Wars"));
@@ -147,7 +144,8 @@ public class SpaceshipControllerTest {
         doNothing().when(service).deleteSpaceship(1L);
 
         mockMvc.perform(delete("/api/spaceships/1")
-                .contentType(MediaType.APPLICATION_JSON))
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(httpBasic(USERNAME, PASSWORD)))
                 .andExpect(status().isOk());
     }
 }
